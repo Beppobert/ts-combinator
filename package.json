@@ -1,0 +1,26 @@
+{
+  "name": "parser-combinator",
+  "version": "0.0.1",
+  "private": false,
+  "description": "",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "test": "vitest",
+    "coverage": "vitest run --coverage"
+  },
+  "author": "Philipp Dehler",
+  "license": "ISC",
+  "devDependencies": {
+    "@vitest/coverage-v8": "^1.2.2",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.2"
+  },
+  "keywords": [
+    "typescript",
+    "hkt",
+    "parser",
+    "combinator",
+    "parser-combinator"
+  ]
+}
