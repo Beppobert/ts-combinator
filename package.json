@@ -1,8 +1,8 @@
 {
-  "name": "@beppo/ts-combinator",
+  "name": "@beppobert/ts-combinator",
   "version": "0.0.1",
   "private": false,
-  "description": "",
+  "description": "This library is a proof of concept and is not intended for production use. It aims to align an HKT implementation with runtime code. It implements a simple parser combinator library. You can use it to implement a typesafe JSON parser or GraphQL query parser.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -18,7 +18,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Beppobert/ts-combinator/"
+    "url": "git+https://github.com/Beppobert/ts-combinator.git"
   },
   "keywords": [
     "typescript",
@@ -26,5 +26,9 @@
     "parser",
     "combinator",
     "parser-combinator"
-  ]
+  ],
+  "bugs": {
+    "url": "https://github.com/Beppobert/ts-combinator/issues"
+  },
+  "homepage": "https://github.com/Beppobert/ts-combinator#readme"
 }
