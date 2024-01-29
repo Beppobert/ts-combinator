@@ -5,7 +5,7 @@ This library is a proof of concept and is not intended for production use. It ai
 ## Quickstart
 
 ```shell
-npm install @beppo/ts-combinator
+npm install @beppobert/ts-combinator
 ```
 
 ### Example of a non-recursive array parser
@@ -20,7 +20,7 @@ import {
   num,
   to_number,
   until,
-} from "@beppo/ts-combinator";
+} from "@beppobert/ts-combinator";
 
 const number = capture(num, to_number);
 const numberResult = number().apply("123").parse();
@@ -54,7 +54,7 @@ import {
   num,
   to_number,
   until,
-} from "@beppo/ts-combinator";
+} from "@beppobert/ts-combinator";
 
 const number = capture(num, to_number);
 const numberResult = number().apply("123").parse();
@@ -253,7 +253,7 @@ At this point, if a transformation fails, it will result in a runtime error and 
 The to_number transformator transforms the captured value to a number.
 
 ```typescript
-import { num, to_number, capture } from "@beppo/ts-combinator";
+import { num, to_number, capture } from "@beppobert/ts-combinator";
 const number = capture(num, to_number);
 number().apply("123").parse();
 // { tag:"Ok", pares: "123", rest: "", stack: [123] }
@@ -264,7 +264,7 @@ number().apply("123").parse();
 The identity transformator returns the captured value.
 
 ```typescript
-import { num, identity, capture } from "@beppo/ts-combinator";
+import { num, identity, capture } from "@beppobert/ts-combinator";
 const number = capture(num, identity);
 number().apply("123").parse();
 // { tag:"Ok", pares: "123", rest: "", stack: ["123"] }
@@ -275,7 +275,7 @@ number().apply("123").parse();
 The constant transformator returns the given value.
 
 ```typescript
-import { num, constant, capture } from "@beppo/ts-combinator";
+import { num, constant, capture } from "@beppobert/ts-combinator";
 const number = capture(num, constant(42));
 number().apply("123").parse();
 // { tag:"Ok", pares: "123", rest: "", stack: [42] }
@@ -284,7 +284,7 @@ number().apply("123").parse();
 If you don't want to infer the literal value, there is an expand util that can be used to widen the type of the literal.
 
 ```typescript
-import { num, constant, capture, expand } from "@beppo/ts-combinator";
+import { num, constant, capture, expand } from "@beppobert/ts-combinator";
 const number = capture(num, constant(expand(42)));
 number().apply("123").parse();
 // { tag:"Ok", pares: "123", rest: "", stack: [number] }
@@ -295,7 +295,7 @@ number().apply("123").parse();
 The widen transformator widens the return type of another transformator.
 
 ```typescript
-import { num, widen, capture } from "@beppo/ts-combinator";
+import { num, widen, capture } from "@beppobert/ts-combinator";
 const number = capture(num, widen(to_number));
 number().apply("123").parse();
 // { tag:"Ok", pares: "123", rest: "", stack: [number] }
@@ -307,7 +307,7 @@ The lookup transformator looks up the given key from a known dictionary.
 The dictionary needs a "Default" key.
 
 ```typescript
-import { num, lookup, capture } from "@beppo/ts-combinator";
+import { num, lookup, capture } from "@beppobert/ts-combinator";
 const foo = literal("foo");
 const bar = literal("bar");
 const fizz = literal("fizz");
@@ -329,7 +329,7 @@ lookedUp().apply("fizz").parse();
 The from_entries transformator transforms an array of entries into an object.
 
 ```typescript
-import { num, from_entries, capture } from "@beppo/ts-combinator";
+import { num, from_entries, capture } from "@beppobert/ts-combinator";
 const str = seq([literal('"'), capture(until('"')), literal('"')]);
 const record_string_string = layer(
   seq([
@@ -363,7 +363,7 @@ literalA().apply("b").parse();
 You can create your own combinators. Take this dummy code example
 
 ```typescript
-import { Combinator, Ok, Err, isOk } from "@beppo/ts-combinator";
+import { Combinator, Ok, Err, isOk } from "@beppobert/ts-combinator";
 
 type _FooCombinator<Input extends string> = // /.../ <- your combinator as type
 
@@ -397,7 +397,7 @@ function fooCombinator(input:SomeOtherCombinator): FooCombinator {
 ## Custom transformators
 
 ```typescript
-import { Lazy, MapCapture } from "@beppo/ts-combinator";
+import { Lazy, MapCapture } from "@beppobert/ts-combinator";
 
 // create a type that matches your needs
 type _ToNumber<T> = T extends `${infer N extends number}` ? N : never;
@@ -443,7 +443,7 @@ import {
   from_entries,
   expand,
   constant,
-} from "@beppo/ts-combinator";
+} from "@beppobert/ts-combinator";
 
 type json_string = seq<[quote, capture<until_quote>, quote]>;
 function json_string(): ReturnType<json_string> {
