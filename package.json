@@ -1,6 +1,6 @@
 {
   "name": "@beppobertbert/ts-combinator",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": false,
   "description": "This library is a proof of concept and is not intended for production use. It aims to align an HKT implementation with runtime code. It implements a simple parser combinator library. You can use it to implement a typesafe JSON parser or GraphQL query parser.",
   "main": "dist/index.js",
