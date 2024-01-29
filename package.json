@@ -1,5 +1,5 @@
 {
-  "name": "parser-combinator",
+  "name": "@beppo/ts-combinator",
   "version": "0.0.1",
   "private": false,
   "description": "",
