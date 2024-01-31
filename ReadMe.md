@@ -24,10 +24,10 @@ import {
 
 const number = capture(num, to_number);
 const numberResult = number().apply("123").parse();
-// numberResult = { tag:"Ok", pares: "123", rest: "", stack: [123] }
+// numberResult = { tag:"Ok", parsed: "123", rest: "", stack: [123] }
 const string = seq([literal("'"), capture(until('"')), literal("'")]);
 const stringResult = string().apply("'hello'").parse();
-// stringResult = { tag:"Ok", pares: "'hello'", rest: "", stack: ["hello"] }
+// stringResult = { tag:"Ok", parsed: "'hello'", rest: "", stack: ["hello"] }
 const value = or([number, string]);
 const array = layer(
   seq([
@@ -37,7 +37,7 @@ const array = layer(
   ])
 );
 const arrayResult = array().apply("[1,2,3]").parse();
-// arrayResult = { tag:"Ok", pares: "[1,2,3]", rest: "", stack: [[1,2,3]] }
+// arrayResult = { tag:"Ok", parsed: "[1,2,3]", rest: "", stack: [[1,2,3]] }
 ```
 
 ## Example of a recursive array parser
@@ -58,10 +58,10 @@ import {
 
 const number = capture(num, to_number);
 const numberResult = number().apply("123").parse();
-// numberResult = { tag:"Ok", pares: "123", rest: "", stack: [123] }
+// numberResult = { tag:"Ok", parsed: "123", rest: "", stack: [123] }
 const string = seq([literal("'"), capture(until('"')), literal("'")]);
 const stringResult = string().apply("'hello'").parse();
-// stringResult = { tag:"Ok", pares: "'hello'", rest: "", stack: ["hello"] }
+// stringResult = { tag:"Ok", parsed: "'hello'", rest: "", stack: ["hello"] }
 
 type array = layer<
   seq<
@@ -90,7 +90,7 @@ function value(): ReturnType<value> {
   return or([number, string, array])();
 }
 const arrayResult = array().apply('[1,2,3,["foo","bar",1]]').parse();
-// arrayResult = { tag:"Ok", pares: '[1,2,3,["foo","bar",1]]', rest: "", stack: [[1,2,3,["foo","bar",1]]] }
+// arrayResult = { tag:"Ok", parsed: '[1,2,3,["foo","bar",1]]', rest: "", stack: [[1,2,3,["foo","bar",1]]] }
 ```
 
 ## Combinator API Documentation
@@ -102,7 +102,7 @@ The literal combinator matches a string literal.
 ```typescript
 const singleQuote = literal("'");
 singleQuote().apply("'").parse();
-// {tag:"Ok", pares: "'", rest: "", stack: [] }
+// {tag:"Ok", parsed: "'", rest: "", stack: [] }
 singleQuote().apply("a").parse();
 // {tag:"Err", error: "[literal]: Expected: '. Received: 'a'" }
 ```
@@ -114,7 +114,7 @@ The eoi combinator matches the end of the input.
 ```typescript
 const end = eoi();
 end().apply("").parse();
-// {tag:"Ok", pares: "", rest: "", stack: [] }
+// {tag:"Ok", parsed: "", rest: "", stack: [] }
 end().apply("a").parse();
 // {tag:"Err", error: "[eoi]: Expected: End of Input. Received: 'a'" }
 ```
@@ -126,9 +126,9 @@ The many combinator matches the given parser zero or more times.
 ```typescript
 const manyA = many(literal("a"));
 manyA().apply("aaa").parse();
-// {tag:"Ok", pares: "aaa", rest: "", stack: [] }
+// {tag:"Ok", parsed: "aaa", rest: "", stack: [] }
 manyA().apply("b").parse();
-// {tag:"Ok", pares: "", rest: "b", stack: [] }
+// {tag:"Ok", parsed: "", rest: "b", stack: [] }
 ```
 
 ### one_or_more
@@ -138,7 +138,7 @@ The one_or_more combinator matches the given parser one or more times.
 ```typescript
 const oneOrMoreA = one_or_more(literal("a"));
 oneOrMoreA().apply("aaa").parse();
-// {tag:"Ok", pares: "aaa", rest: "", stack: [] }
+// {tag:"Ok", parsed: "aaa", rest: "", stack: [] }
 oneOrMoreA().apply("b").parse();
 // {tag:"Err", error: ""[one_or_more]: Expected: One or more. Received: 'b'"
 ```
@@ -150,9 +150,9 @@ The optional combinator matches the given parser zero or one times.
 ```typescript
 const optionalA = optional(literal("a"));
 optionalA().apply("a").parse();
-// {tag:"Ok", pares: "a", rest: "", stack: [] }
+// {tag:"Ok", parsed: "a", rest: "", stack: [] }
 optionalA().apply("b").parse();
-// {tag:"Ok", pares: "", rest: "b", stack: [] }
+// {tag:"Ok", parsed: "", rest: "b", stack: [] }
 ```
 
 ### seq
@@ -163,7 +163,7 @@ Note: The seq combinator propagates the error of the first failed parser.
 ```typescript
 const seqA = seq([literal("a"), literal("b")]);
 seqA().apply("ab").parse();
-// {tag:"Ok", pares: "ab", rest: "", stack: [] }
+// {tag:"Ok", parsed: "ab", rest: "", stack: [] }
 seqA().apply("a").parse();
 // {tag:"Err", error: "[literal]: Expected: b. Received: ''" }
 ```
@@ -175,9 +175,9 @@ The or combinator matches the given parsers in sequence.
 ```typescript
 const orA = or([literal("a"), literal("b")]);
 orA().apply("a").parse();
-// { tag:"Ok", pares: "a", rest: "", stack: [] }
+// { tag:"Ok", parsed: "a", rest: "", stack: [] }
 orA().apply("b").parse();
-// { tag:"Ok", pares: "b", rest: "", stack: [] }
+// { tag:"Ok", parsed: "b", rest: "", stack: [] }
 orA().apply("c").parse();
 // { tag:"Err", error: "[or]: Expected: Matching combinator. Received: 'c'" }
 ```
@@ -190,7 +190,7 @@ Note: There is no until combinator that takes a combinator as input.
 ```typescript
 const untilA = until("a");
 untilA().apply("fooooooa").parse();
-// { tag:"Ok", pares: "foooooo", rest: "a", stack: [] }
+// { tag:"Ok", parsed: "foooooo", rest: "a", stack: [] }
 
 const untilFail = until("a");
 untilFail().apply("foooooo").parse();
@@ -204,14 +204,14 @@ The capture combinator pushes the result of the given parser to the stack.
 ```typescript
 const captureA = capture(literal("a"));
 captureA().apply("a").parse();
-// { tag:"Ok", pares: "a", rest: "", stack: ["a"] }
+// { tag:"Ok", parsed: "a", rest: "", stack: ["a"] }
 const captureAB = capture(seq([literal("a"), literal("b")]));
 captureAB().apply("ab").parse();
-// { tag:"Ok", pares: "ab", rest: "", stack: ["ab"] }
+// { tag:"Ok", parsed: "ab", rest: "", stack: ["ab"] }
 
 const captureMultiple = capture(capture(literal("a")));
 captureMultiple().apply("a").parse();
-// { tag:"Ok", pares: "a", rest: "", stack: ["a","a"] }
+// { tag:"Ok", parsed: "a", rest: "", stack: ["a","a"] }
 ```
 
 There are also some custom mapper functions that can be used to transform captured values.
@@ -223,10 +223,10 @@ The capture_with_label combinator pushes the result of the given parser to the s
 ```typescript
 const captureA = capture_with_label("a", literal("a"));
 captureA().apply("a").parse();
-// { tag:"Ok", pares: "a", rest: "", stack: [{a:"a"}] }
+// { tag:"Ok", parsed: "a", rest: "", stack: [{a:"a"}] }
 const captureAB = capture_with_label("ab", seq([literal("a"), literal("b")]));
 captureAB().apply("ab").parse();
-// { tag:"Ok", pares: "ab", rest: "", stack: [{ab:"ab"}] }
+// { tag:"Ok", parsed: "ab", rest: "", stack: [{ab:"ab"}] }
 ```
 
 ### layer
@@ -236,11 +236,11 @@ The layer combinator encapsulates all matching combinators in a new stack layer.
 ```typescript
 const layerA = layer(literal("a")); // no combinator
 layerA().apply("a").parse();
-// { tag:"Ok", pares: "a", rest: "", stack: [[]] } <- empty layer
+// { tag:"Ok", parsed: "a", rest: "", stack: [[]] } <- empty layer
 
 const layerAB = layer(capture(seq([literal("a"), literal("b")])));
 layerAB().apply("ab").parse();
-// { tag:"Ok", pares: "ab", rest: "", stack: [["ab"]] } <- layer with captured value
+// { tag:"Ok", parsed: "ab", rest: "", stack: [["ab"]] } <- layer with captured value
 ```
 
 ## Transformators
@@ -256,7 +256,7 @@ The to_number transformator transforms the captured value to a number.
 import { num, to_number, capture } from "@beppobert/ts-combinator";
 const number = capture(num, to_number);
 number().apply("123").parse();
-// { tag:"Ok", pares: "123", rest: "", stack: [123] }
+// { tag:"Ok", parsed: "123", rest: "", stack: [123] }
 ```
 
 ### identity
@@ -267,7 +267,7 @@ The identity transformator returns the captured value.
 import { num, identity, capture } from "@beppobert/ts-combinator";
 const number = capture(num, identity);
 number().apply("123").parse();
-// { tag:"Ok", pares: "123", rest: "", stack: ["123"] }
+// { tag:"Ok", parsed: "123", rest: "", stack: ["123"] }
 ```
 
 ### constant
@@ -278,7 +278,7 @@ The constant transformator returns the given value.
 import { num, constant, capture } from "@beppobert/ts-combinator";
 const number = capture(num, constant(42));
 number().apply("123").parse();
-// { tag:"Ok", pares: "123", rest: "", stack: [42] }
+// { tag:"Ok", parsed: "123", rest: "", stack: [42] }
 ```
 
 If you don't want to infer the literal value, there is an expand util that can be used to widen the type of the literal.
@@ -287,7 +287,7 @@ If you don't want to infer the literal value, there is an expand util that can b
 import { num, constant, capture, expand } from "@beppobert/ts-combinator";
 const number = capture(num, constant(expand(42)));
 number().apply("123").parse();
-// { tag:"Ok", pares: "123", rest: "", stack: [number] }
+// { tag:"Ok", parsed: "123", rest: "", stack: [number] }
 ```
 
 ### widen
@@ -298,7 +298,7 @@ The widen transformator widens the return type of another transformator.
 import { num, widen, capture } from "@beppobert/ts-combinator";
 const number = capture(num, widen(to_number));
 number().apply("123").parse();
-// { tag:"Ok", pares: "123", rest: "", stack: [number] }
+// { tag:"Ok", parsed: "123", rest: "", stack: [number] }
 ```
 
 ### lookup
@@ -317,11 +317,11 @@ const lookedUp = capture(
   lookup({ foo: 42, bar: 43, Default: 44 })
 );
 lookedUp().apply("foo").parse();
-// { tag:"Ok", pares: "foo", rest: "", stack: [42] }
+// { tag:"Ok", parsed: "foo", rest: "", stack: [42] }
 lookedUp().apply("bar").parse();
-// { tag:"Ok", pares: "bar", rest: "", stack: [43] }
+// { tag:"Ok", parsed: "bar", rest: "", stack: [43] }
 lookedUp().apply("fizz").parse();
-// { tag:"Ok", pares: "fizz", rest: "", stack: [44] }
+// { tag:"Ok", parsed: "fizz", rest: "", stack: [44] }
 ```
 
 ### from_entries
@@ -341,9 +341,9 @@ const record_string_string = layer(
 )();
 
 record_string_string().apply('{"foo":"bar"}').parse();
-// { tag:"Ok", pares: '{"foo":"bar"}', rest: "", stack: [{foo:"bar"}] }
+// { tag:"Ok", parsed: '{"foo":"bar"}', rest: "", stack: [{foo:"bar"}] }
 record_string_string().apply('{"foo":"bar","fizz":"buzz"}').parse();
-// { tag:"Ok", pares: '{"foo":"bar","fizz":"buzz"}', rest: "", stack: [{foo:"bar",fizz:"buzz"}] }
+// { tag:"Ok", parsed: '{"foo":"bar","fizz":"buzz"}', rest: "", stack: [{foo:"bar",fizz:"buzz"}] }
 ```
 
 ## Error handling
@@ -550,5 +550,5 @@ const jsonResult = json()
   .parse();
 // jsonResult = {
 //   tag: "Ok",
-//   pares: '{"foo":"bar","fizz":"buzz","arr":[1,2,3],"obj":{"foo":"bar"},"null":null,"true":boolean,"false":boolean}',
+//   parsed: '{"foo":"bar","fizz":"buzz","arr":[1,2,3],"obj":{"foo":"bar"},"null":null,"true":boolean,"false":boolean}',
 ```
